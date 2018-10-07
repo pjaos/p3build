@@ -1,0 +1,4 @@
+#!/bin/sh
+
+echo "The pbuild command is now available"
+

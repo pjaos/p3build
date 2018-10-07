@@ -1,0 +1,10 @@
+Package: python-pbuild
+Section: Development
+Priority: optional
+Architecture: all
+Essential: no
+Depends: python-pjalib (>= 1.2)
+Installed-Size: 2
+Maintainer: Paul Austen <pausten.os@gmail.com>
+Description: A simple tool to build python packages for Linux distros.
+Version: 1.0
