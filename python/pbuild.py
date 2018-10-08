@@ -38,7 +38,7 @@ class DebBuilder(object):
     DIST_PACKAGES_FOLDER = "%s/usr/local/lib/python2.7/dist-packages" % (BUILD_FOLDER)
     BIN_FILES_FOLDER     = "%s/usr/local/bin" % (BUILD_FOLDER)
     DIST_INITD_FOLDER    = "%s/etc/init.d" % (BUILD_FOLDER)
-    OUTPUT_FOLDER        = "PACKAGES"
+    OUTPUT_FOLDER        = "packages"
 
     def __init__(self, uio, options):
         """@brief Constructor
