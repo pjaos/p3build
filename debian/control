@@ -7,4 +7,4 @@ Depends: python-pjalib (>= 2.1)
 Installed-Size: 2
 Maintainer: Paul Austen <pausten.os@gmail.com>
 Description: A simple tool to build python packages for Linux distros.
-Version: 1.2
+Version: 1.4

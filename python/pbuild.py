@@ -3,7 +3,6 @@
 import  sys
 import  os
 from    optparse import OptionParser
-from    subprocess import check_call
 import  shutil
 import  getpass
 
@@ -33,6 +32,7 @@ class DebBuilder(object):
     DEBIAN_FOLDER        = "debian"
     BUILD_FOLDER         = "build"
     INITD_FOLDER         = "init.d"
+    ROOT_FS_FOLDER       = "root_fs"
     BUILD_DEBIAN_FOLDER  = "%s/DEBIAN" % (BUILD_FOLDER)
     #!!! This assumes python 2.7 !!!
     DIST_PACKAGES_FOLDER = "%s/usr/local/lib/python2.7/dist-packages" % (BUILD_FOLDER)
@@ -124,6 +124,8 @@ class DebBuilder(object):
 
         self._initdFiles = self._getFileList(DebBuilder.INITD_FOLDER)
 
+        self._rootFSFiles = self._getFileList(DebBuilder.ROOT_FS_FOLDER)
+
         self._loadPackageAttr()
 
     def _runLocalCmd(self, cmd):
@@ -177,6 +179,15 @@ class DebBuilder(object):
         for initdFile in self._initdFiles:
             shutil.copy(initdFile, DebBuilder.DIST_INITD_FOLDER)
             self._uio.info("Copied %s to %s" % (initdFile, DebBuilder.DIST_INITD_FOLDER))
+
+        for rootFSFile in self._rootFSFiles:
+            if os.path.isfile(rootFSFile):
+                shutil.copy(rootFSFile, DebBuilder.BUILD_FOLDER)
+                self._uio.info("Copied %s to %s" % (rootFSFile, DebBuilder.BUILD_FOLDER))
+            else:
+                destFolder = os.path.join(DebBuilder.BUILD_FOLDER, os.path.basename(rootFSFile))
+                shutil.copytree(rootFSFile, destFolder)
+                self._uio.info("Copied %s to %s" % (rootFSFile, destFolder))
 
         for debianFile in self._debianFiles:
             shutil.copy(debianFile, DebBuilder.BUILD_DEBIAN_FOLDER)
@@ -257,8 +268,9 @@ def main():
                                 '              postinst: Script executed after installation.\n'
                                 '              prerm:    Script executed before removal.\n'
                                 '              postrm:   Script executed after removal.\n\n'
-                                'The following folder is optional.\n'
+                                'The following folders are optional.\n'
                                 'init.d:       Contains startup script file/s to be installed into /etc/init.d.\n\n'
+                                'root_fs:      Contains files to be copied into the root of the destination file system.\n\n'
                                 'The output package (.deb and .rpm) files are placed in the local %s folder.\n' % (DebBuilder.OUTPUT_FOLDER)
                         )
     opts.add_option("--debug", help="Enable debugging.", action="store_true", default=False)
