@@ -262,7 +262,7 @@ def main():
                                 'The output package (.deb and .rpm) files are placed in the local %s folder.\n' % (DebBuilder.OUTPUT_FOLDER)
                         )
     opts.add_option("--debug", help="Enable debugging.", action="store_true", default=False)
-    opts.add_option("--clean", help="Remove the %s folder.", action="store_true", default=False)
+    opts.add_option("--clean", help="Remove the %s folder." % (DebBuilder.OUTPUT_FOLDER), action="store_true", default=False)
     opts.add_option("--lbp",   help="Leave build path. A debugging option to allow the build folder to be examined after the build has completed.", action="store_true", default=False)
 
     try:
