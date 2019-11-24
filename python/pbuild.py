@@ -26,8 +26,6 @@ class UIO(object):
 class DebBuilder(object):
     """@brief Responsible for building debian files using distutils and python-stdeb packages"""
 
-    VERSION = 1.1
-
     DEBIAN_FOLDER        = "debian"
     BUILD_FOLDER         = "build"
     INITD_FOLDER         = "init.d"
@@ -231,8 +229,6 @@ class DebBuilder(object):
 
     def run(self):
         """@brief Run the build process."""
-
-        self._uio.info("build version %1.1f" % (DebBuilder.VERSION) )
 
         self._ensureRootUser()
 
