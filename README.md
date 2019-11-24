@@ -1,11 +1,13 @@
 # pbuild
-The objective of pbuild was to provide a simple was of packaging python packages for installation onto a Debian Linux system.
+The objective of pbuild is to provide a simple method of packaging python packages for installation onto Debian based Linux platforms.
 
 # Installation
 To install the pbuild package use the following commands once the git repo has been cloned onto the machine it is to be installed on.
 
 ```sudo ./pbuild.py
-     sudo dpkg -i packages/python-pbuild-1.6-all.deb```
+
+     sudo dpkg -i packages/python-pbuild-1.6-all.deb
+ ```
 
 Alternatively you can use the following command if you wish to install via pip
 
@@ -15,7 +17,7 @@ Alternatively you can use the following command if you wish to install via pip
 To generate a debian installer file the project folder must contain the following.
 
 ## python folder
-This folder contains python files. python files sitting in this folder will become command line programs (minus the .py suffix) once installed on the target system. Folders inside the python folder will become python modules on the once installed on the target system. These will be install into the dist-packages folder on the target system.
+This folder contains python files. python files sitting in this folder will become command line programs (minus the .py suffix) once installed on the target system. Folders inside the python folder will become python modules on the once installed on the target system. These will be installed into the dist-packages folder on the target system.
 
 A requirement for the python files sitting in the python folder (top level only) is that they have a main() method. Therefore the programs in this folder will typically have the following 
 
