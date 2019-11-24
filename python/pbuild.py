@@ -5,9 +5,7 @@ import  os
 from    optparse import OptionParser
 import  shutil
 import  getpass
-
-#TODO
-# Should /etc/init.d/ydev be named /etc/init.d/python-ydev
+import  site
 
 class DebBuilderError(Exception):
     pass
@@ -24,6 +22,7 @@ class UIO(object):
            @param line The line of text."""
         print 'ERROR: %s' % (line)
 
+
 class DebBuilder(object):
     """@brief Responsible for building debian files using distutils and python-stdeb packages"""
 
@@ -34,8 +33,6 @@ class DebBuilder(object):
     INITD_FOLDER         = "init.d"
     ROOT_FS_FOLDER       = "root_fs"
     BUILD_DEBIAN_FOLDER  = "%s/DEBIAN" % (BUILD_FOLDER)
-    #!!! This assumes python 2.7 !!!
-    DIST_PACKAGES_FOLDER = "%s/usr/local/lib/python2.7/dist-packages" % (BUILD_FOLDER)
     BIN_FILES_FOLDER     = "%s/usr/local/bin" % (BUILD_FOLDER)
     DIST_INITD_FOLDER    = "%s/etc/init.d" % (BUILD_FOLDER)
     OUTPUT_FOLDER        = "packages"
@@ -52,6 +49,8 @@ class DebBuilder(object):
         self._debianFiles = None
         self._packageName = None
         self._version     = None
+
+        self._sitePackagesFolder = "%s%s" % (DebBuilder.BUILD_FOLDER, site.getsitepackages()[0])
 
     def _getpythonFiles(self):
         """@brief Get the python files to install in site packages.
@@ -142,8 +141,9 @@ class DebBuilder(object):
         os.makedirs(DebBuilder.BUILD_DEBIAN_FOLDER)
         self._uio.info("Created %s" % (DebBuilder.BUILD_DEBIAN_FOLDER))
 
-        os.makedirs(DebBuilder.DIST_PACKAGES_FOLDER)
-        self._uio.info("Created %s" % (DebBuilder.DIST_PACKAGES_FOLDER))
+        if not os.path.isdir(self._sitePackagesFolder):
+            os.makedirs(self._sitePackagesFolder)
+            self._uio.info("Created %s" % (self._sitePackagesFolder))
 
         os.makedirs(DebBuilder.BIN_FILES_FOLDER)
         self._uio.info("Created %s" % (DebBuilder.BIN_FILES_FOLDER))
@@ -157,10 +157,10 @@ class DebBuilder(object):
 
         for pythonFile in self._pythonFiles:
             if os.path.isfile(pythonFile):
-                shutil.copy(pythonFile, DebBuilder.DIST_PACKAGES_FOLDER)
-                self._uio.info("Copied %s to %s" % (pythonFile, DebBuilder.DIST_PACKAGES_FOLDER))
+                shutil.copy(pythonFile, self._sitePackagesFolder)
+                self._uio.info("Copied %s to %s" % (pythonFile, self._sitePackagesFolder))
             else:
-                destFolder = os.path.join(DebBuilder.DIST_PACKAGES_FOLDER, os.path.basename(pythonFile))
+                destFolder = os.path.join(self._sitePackagesFolder, os.path.basename(pythonFile))
                 shutil.copytree(pythonFile, destFolder)
                 self._uio.info("Copied %s to %s" % (pythonFile, destFolder))
 
@@ -231,7 +231,7 @@ class DebBuilder(object):
 
     def run(self):
         """@brief Run the build process."""
-        
+
         self._uio.info("build version %1.1f" % (DebBuilder.VERSION) )
 
         self._ensureRootUser()
