@@ -1,9 +1,9 @@
-Package: python-pbuild
+Package: python-p3build
 Section: Development
 Priority: optional
 Architecture: all
 Essential: no
 Installed-Size: 2
 Maintainer: Paul Austen <pausten.os@gmail.com>
-Description: A simple tool to build python packages for Linux distros.
+Description: A simple tool to build python 3 packages for Linux distros.
 Version: 1.6

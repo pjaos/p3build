@@ -5,18 +5,17 @@ import setuptools
 from setuptools.command.install import install
 from tempfile import NamedTemporaryFile
 
-MODULE_NAME="pbuild"                                                            #The python module name
-VERSION = "1.6"                                                                 #The version of the application
-AUTHOR  = "Paul Austen"                                                         #The name of the applications author
-AUTHOR_EMAIL = "pausten.os@gmail.com"                                           #The email address of the author
-DESCRIPTION = "Build python debian packages with ease."                         # A short description of the application
-PYTHON_VERSION = 2                                                              #The python applications version
-LICENSE = "MIT License"                                                         #The License that the application is distributed under
-REQUIRED_LIBS = []                                                              #A python list of required libs (optionally including versions)
-                                                                                #A list of python files (minus the .py extension) in the module containing the main entry point.
-MAIN_FILES=["pbuild"]                                                   
-
-LOGGING_FOLDER="/var/log/"                                                      #The location of the modules install log file
+MODULE_NAME    = "p3build"                                     #The python module name
+VERSION        = "1.6"                                         #The version of the application
+AUTHOR         = "Paul Austen"                                 #The name of the applications author
+AUTHOR_EMAIL   = "pausten.os@gmail.com"                        #The email address of the author
+DESCRIPTION    = "Build python debian packages with ease."     # A short description of the application
+PYTHON_VERSION = 3                                             #The python applications version
+LICENSE        = "MIT License"                                 #The License that the application is distributed under
+REQUIRED_LIBS  = []                                            #A python list of required libs (optionally including versions)
+                                                               #A list of python files (minus the .py extension) in the module containing the main entry point.
+MAIN_FILES     = ["p3build"]                                   #Python files to be available on Linux cmd line.                
+LOGGING_FOLDER = "/var/log/"                                     #The location of the modules install log file
 
 class CustomInstallCommand(install):
     """@brief Respinsible for installing one or more startup scripts
@@ -61,15 +60,17 @@ class CustomInstallCommand(install):
             startupScript = os.path.join(path, mainModule)
             fd = NamedTemporaryFile(delete=False)
             tmpFile = fd.name
-            fd.write("#!/usr/bin/python\n")
-            fd.write("from %s import %s\n" % (moduleName, mainModule) )
-            fd.write("%s.main()\n" % (mainModule) )
+            fd.write( "#!/usr/bin/python3\n".encode('utf-8') )
+            importCmd = "from %s import %s\n" % (moduleName, mainModule)
+            fd.write( importCmd.encode('utf-8') )
+            mainCmd = "%s.main()\n" % (mainModule)
+            fd.write(mainCmd.encode('utf-8'))
             fd.close()
             os.rename(tmpFile, startupScript)
             self._makeExecutable(startupScript)
             self._log("Installed %s" % (startupScript) )
         return startupScript
-                    
+
     def _runCmd(self, cmd):
         """@brief Run a command
            @param cmd The command to run.

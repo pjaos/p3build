@@ -1,20 +1,26 @@
-# pbuild
-The objective of pbuild is to provide a simple method of packaging python packages for installation onto Debian based Linux platforms.
+# p3build
+The objective of pbuild is to provide a simple method of packaging python packages for installation onto Debian based Linux platforms. This is similar to the pbuild package but for installing python3
+applications.
 
 # Installation
-To install the pbuild package, clone the repo onto the machine it is to be installed on. From inside the repo the following commands can be used to install pbuild onto the machine.
+To install the p3build package, clone the repo onto the machine it is to be installed on. From inside the repo the following commands can be used to install p3build onto the machine.
 
 ```
-  sudo ./pbuild.py
+  sudo ./p3build.py
 
-  sudo dpkg -i packages/python-pbuild-1.6-all.deb
+  sudo dpkg -i packages/python-p3build-1.6-all.deb
  ```
 
-Alternatively you can use the following command if you wish to install via pip
+Alternatively you can use the following command if you wish to install via pip3
 
 ```
-  sudo pip install .
-  
+  sudo pip3 install . 
+```
+
+And to uninstall using pip3
+
+```
+ sudo pip3 uninstall p3build
 ```
 
 # Usage

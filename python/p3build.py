@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import  sys
 import  os
@@ -15,12 +15,12 @@ class UIO(object):
     def info(self, line):
         """@breif Show an info level message
            @param line The line of text."""
-        print 'INFO:  %s' % (line)
+        print( 'INFO:  %s' % (line) )
 
     def error(self, line):
         """@breif Show an error level message
            @param line The line of text."""
-        print 'ERROR: %s' % (line)
+        print( 'ERROR: %s' % (line) )
 
 
 class DebBuilder(object):
@@ -168,9 +168,9 @@ class DebBuilder(object):
                 filename = filename.replace(".py", "")
                 destFile = os.path.join(DebBuilder.BIN_FILES_FOLDER, filename)
                 fd = open(destFile, 'w')
-                fd.write("#!/usr/bin/env python\n")
-                fd.write("import %s\n" % (filename) )
-                fd.write("%s.main()\n" % (filename) )
+                fd.write( "#!/usr/bin/env python3\n" )
+                fd.write( "import %s\n" % (filename) )
+                fd.write( "%s.main()\n" % (filename) )
                 fd.close()
                 self._uio.info("Created %s" % (destFile))
 
