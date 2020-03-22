@@ -6,4 +6,4 @@ Essential: no
 Installed-Size: 2
 Maintainer: Paul Austen <pausten.os@gmail.com>
 Description: A simple tool to build python 3 packages for Linux distros.
-Version: 1.6
+Version: 1.7
