@@ -269,7 +269,7 @@ def main():
                                 'root_fs:      Contains files to be copied into the root of the destination file system.\n'
                                 'init.d:       Contains startup script file/s to be installed into /etc/init.d. Alternativley\n'
                                 '              these files could be placed in the root_fs folder under /etc/init.d.\n\n'
-                              'The output package (.deb and .rpm) files are placed in the local %s folder.\n' % (DebBuilder.OUTPUT_FOLDER)
+                                'The output package (.deb and .rpm) files are placed in the local {} folder.\n'.format(DebBuilder.OUTPUT_FOLDER)
                         )
     opts.add_option("--debug", help="Enable debugging.", action="store_true", default=False)
     opts.add_option("--clean", help="Remove the %s folder." % (DebBuilder.OUTPUT_FOLDER), action="store_true", default=False)
