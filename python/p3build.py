@@ -286,12 +286,12 @@ def main():
     # Don't print error information if CTRL C pressed
     except KeyboardInterrupt:
         pass
-    except:
+    except Exception as ex:
         if options.debug:
             raise
 
         else:
-            uio.error(sys.exc_value)
+            uio.error(str(ex))
 
 if __name__ == '__main__':
     main()
