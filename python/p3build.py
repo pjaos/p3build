@@ -250,7 +250,8 @@ class DebBuilder(object):
 def main():
     uio = UIO()
 
-    opts = OptionParser(usage='\nBuild deb and rpm Linux install packages for a python program.\n\n'
+    opts = OptionParser(usage=  'usage: %prog [options]\n'
+                                '\nBuild deb and rpm Linux install packages for a python program.\n\n'
                                 'The following folders are required.\n'
                                 'python:       Contains the python file/s and or folders to be installed.\n'
                                 '              Any python files in here are converted to commands. The\n'
