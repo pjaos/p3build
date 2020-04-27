@@ -207,12 +207,15 @@ class DebBuilder(object):
             if entry.startswith(self._packageName) and entry.endswith(".deb") and entry.find(self._version) > 0:
                 cwd = os.getcwd()
                 os.chdir(DebBuilder.OUTPUT_FOLDER)
-                buildCmd = "alien --to-rpm --scripts %s" % (entry)
-                self._runLocalCmd(buildCmd)
-                self._uio.info("Created rpm file from deb")
-                buildCmd = "alien --to-tgz --scripts %s" % (entry)
-                self._runLocalCmd(buildCmd)
-                self._uio.info("Created tgz file from deb")
+                if self._options.rpm:
+                    buildCmd = "alien --to-rpm --scripts %s" % (entry)
+                    self._runLocalCmd(buildCmd)
+                    self._uio.info("Created rpm file from deb")
+
+                if self._options.tgz:
+                    buildCmd = "alien --to-tgz --scripts %s" % (entry)
+                    self._runLocalCmd(buildCmd)
+                    self._uio.info("Created tgz file from deb")
                 os.chdir(cwd)
 
     def _build(self):
@@ -274,6 +277,8 @@ def main():
     opts.add_option("--debug", help="Enable debugging.", action="store_true", default=False)
     opts.add_option("--clean", help="Remove the %s folder." % (DebBuilder.OUTPUT_FOLDER), action="store_true", default=False)
     opts.add_option("--lbp",   help="Leave build path. A debugging option to allow the build folder to be examined after the build has completed.", action="store_true", default=False)
+    opts.add_option("--rpm",   help="Generate an rpm output file as well as the deb file.", action="store_true", default=False)
+    opts.add_option("--tgz",   help="Generate an tgz output file as well as the deb file.", action="store_true", default=False)
 
     try:
         (options, args) = opts.parse_args()
