@@ -50,6 +50,11 @@ class DebBuilder(object):
 
         self._sitePackagesFolder = "%s%s" % (DebBuilder.BUILD_FOLDER, site.getsitepackages()[0])
 
+        if self._options.sitep:
+            self._sitePackagesFolder = self._sitePackagesFolder.replace("dist-packages", "site-packages")
+
+        self._uio.info("Installing into {}".format(self._sitePackagesFolder))
+
     def _getpythonFiles(self):
         """@brief Get the python files to install in site packages.
                   Python files should be placed in the python folder."""
@@ -168,7 +173,7 @@ class DebBuilder(object):
                 filename = filename.replace(".py", "")
                 destFile = os.path.join(DebBuilder.BIN_FILES_FOLDER, filename)
                 fd = open(destFile, 'w')
-                fd.write( "#!/usr/bin/env python3\n" )
+                fd.write( "#!/usr/bin/env {}\n".format(self._options.python) )
                 fd.write( "import %s\n" % (filename) )
                 fd.write( "%s.main()\n" % (filename) )
                 fd.close()
@@ -279,6 +284,8 @@ def main():
     opts.add_option("--lbp",   help="Leave build path. A debugging option to allow the build folder to be examined after the build has completed.", action="store_true", default=False)
     opts.add_option("--rpm",   help="Generate an rpm output file as well as the deb file.", action="store_true", default=False)
     opts.add_option("--tgz",   help="Generate an tgz output file as well as the deb file.", action="store_true", default=False)
+    opts.add_option("--sitep", help="Install into the site packages folder (default = {}).".format(site.getsitepackages()[0]), action="store_true", default=False)
+    opts.add_option("--python",help="The python command to execute (default=python3) each of the python programs in the package.", default="python3")
 
     try:
         (options, args) = opts.parse_args()
