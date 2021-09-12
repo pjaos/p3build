@@ -29,7 +29,8 @@ class DebBuilder(object):
     DEBIAN_FOLDER        = "debian"
     BUILD_FOLDER         = "build"
     INITD_FOLDER         = "init.d"
-    ROOT_FS_FOLDER       = "root_fs"
+    ROOT_FS_FOLDER_A     = "root_fs"
+    ROOT_FS_FOLDER_B     = "root-fs"
     BUILD_DEBIAN_FOLDER  = "%s/DEBIAN" % (BUILD_FOLDER)
     BIN_FILES_FOLDER     = "%s/usr/local/bin" % (BUILD_FOLDER)
     DIST_INITD_FOLDER    = "%s/etc/init.d" % (BUILD_FOLDER)
@@ -52,6 +53,15 @@ class DebBuilder(object):
 
         if self._options.sitep:
             self._sitePackagesFolder = self._sitePackagesFolder.replace("dist-packages", "site-packages")
+
+        bldPythonVer = None
+        elems = self._sitePackagesFolder.split("/")
+        for elem in elems:
+            if elem.startswith("python"):
+                bldPythonVer = elem
+        if not bldPythonVer:
+            raise Exception("Unable to determine the build python version from {}".format(self._sitePackagesFolder))
+        self._sitePackagesFolder = self._sitePackagesFolder.replace(bldPythonVer, self._options.python)
 
         self._uio.info("Installing into {}".format(self._sitePackagesFolder))
 
@@ -126,7 +136,11 @@ class DebBuilder(object):
 
         self._initdFiles = self._getFileList(DebBuilder.INITD_FOLDER)
 
-        self._rootFSFiles = self._getFileList(DebBuilder.ROOT_FS_FOLDER)
+        rootFSFilesA = self._getFileList(DebBuilder.ROOT_FS_FOLDER_A)
+
+        rootFSFilesB = self._getFileList(DebBuilder.ROOT_FS_FOLDER_B)
+
+        self._rootFSFiles = rootFSFilesA  + rootFSFilesB
 
         self._loadPackageAttr()
 
@@ -189,7 +203,8 @@ class DebBuilder(object):
                 self._uio.info("Copied %s to %s" % (rootFSFile, DebBuilder.BUILD_FOLDER))
             else:
                 destFolder = os.path.join(DebBuilder.BUILD_FOLDER, os.path.basename(rootFSFile))
-                shutil.copytree(rootFSFile, destFolder)
+                self._uio.info("Copy {} to {}".format(rootFSFile, destFolder))
+                shutil.copytree(rootFSFile, destFolder, dirs_exist_ok=True)
                 self._uio.info("Copied %s to %s" % (rootFSFile, destFolder))
 
         for debianFile in self._debianFiles:
@@ -240,6 +255,9 @@ class DebBuilder(object):
 
         self._ensureRootUser()
 
+        if not self._options.python:
+            raise Exception("Use the --python argument to define the required python version.")
+
         if self._options.clean:
 
             self._clean(self._options.clean)
@@ -275,6 +293,7 @@ def main():
                                 '              postrm:   Script executed after removal.\n\n'
                                 'The following folders are optional.\n'
                                 'root_fs:      Contains files to be copied into the root of the destination file system.\n'
+                                'root-fs:      Another name that is valid for the above.\n'
                                 'init.d:       Contains startup script file/s to be installed into /etc/init.d. Alternativley\n'
                                 '              these files could be placed in the root_fs folder under /etc/init.d.\n\n'
                                 'The output package (.deb and .rpm) files are placed in the local {} folder.\n'.format(DebBuilder.OUTPUT_FOLDER)
@@ -285,7 +304,7 @@ def main():
     opts.add_option("--rpm",   help="Generate an rpm output file as well as the deb file.", action="store_true", default=False)
     opts.add_option("--tgz",   help="Generate an tgz output file as well as the deb file.", action="store_true", default=False)
     opts.add_option("--sitep", help="Install into the site packages folder (default = {}).".format(site.getsitepackages()[0]), action="store_true", default=False)
-    opts.add_option("--python",help="The python command to execute (default=python3) each of the python programs in the package.", default="python3")
+    opts.add_option("--python",help="The python command to execute each of the python programs in the package.", default=None)
 
     try:
         (options, args) = opts.parse_args()
